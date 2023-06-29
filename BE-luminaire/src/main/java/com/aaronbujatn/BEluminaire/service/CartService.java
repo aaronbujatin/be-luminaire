@@ -9,12 +9,14 @@ import com.aaronbujatn.BEluminaire.repository.CartRepository;
 import com.aaronbujatn.BEluminaire.repository.ProductRepository;
 import com.aaronbujatn.BEluminaire.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.Principal;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class CartService{
@@ -23,17 +25,22 @@ public class CartService{
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
 
-    public Cart addToCart(String username, Long id) throws UserPrincipalNotFoundException {
+    public Cart addToCart(String username, Long id, int quantity) throws UserPrincipalNotFoundException {
         User user = userRepository.findByUsername(username).orElse(null);
         Product product = productRepository.findById(id).orElse(null);
+        Cart cartItem = cartRepository.findByUserAndProduct(user, product).orElse(null);
 
-        if(user !=null && product != null) {
-            Cart newCart = new  Cart();
-            newCart.setUser(user);
-            newCart.setProduct(product);
-            return cartRepository.save(newCart);
+        if(cartItem != null) {
+            cartItem.setQuantity(cartItem.getQuantity() + quantity);
+
+        } else {
+            cartItem = new  Cart();
+            cartItem.setUser(user);
+            cartItem.setQuantity(quantity);
+            cartItem.setTotal(product.getPrice().multiply(BigDecimal.valueOf(cartItem.getQuantity())));
+            cartItem.setProduct(product);
         }
-    return null;
+    return cartRepository.save(cartItem);
     }
 
     public List<Cart> getCartDetails(String username){
@@ -41,6 +48,36 @@ public class CartService{
                 () -> new UserNotFoundException("Username : " + username + " was not found"));
         return cartRepository.findByUser(user);
 
+    }
+
+    public Cart incrementQuantity(String username,Long id){
+
+        User user = userRepository.findByUsername(username).orElse(null);
+        Product product = productRepository.findById(id).orElse(null);
+        Cart cart = cartRepository.findByUserAndProduct(user, product).orElse(null);
+
+        if(cart != null){
+            cart.setQuantity(cart.getQuantity() + 1);
+            cart.setTotal(product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())));
+            log.info("Getting the total :  " + cart.getTotal());
+
+        }
+
+        return cartRepository.save(cart);
+    }
+
+    public Cart decrementQuantity(String username, Long id){
+
+        User user = userRepository.findByUsername(username).orElse(null);
+        Product product = productRepository.findById(id).orElse(null);
+        Cart cart = cartRepository.findByUserAndProduct(user, product).orElse(null);
+
+        if(cart != null){
+            cart.setQuantity(cart.getQuantity() - 1);
+            cart.setTotal(product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())));
+        }
+
+        return cartRepository.save(cart);
     }
 
 }

@@ -3,6 +3,8 @@ package com.aaronbujatn.BEluminaire.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Setter
 @Getter
 @Entity
@@ -11,6 +13,9 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private int quantity;
+    private BigDecimal total;
+    private BigDecimal grandTotal;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude

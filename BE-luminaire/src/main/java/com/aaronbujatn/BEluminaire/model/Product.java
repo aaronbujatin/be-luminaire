@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class Product implements Serializable {
     @Column(length = 500000)
     private List<String> imageUrl;
     private String description;
-    private double price;
+    private BigDecimal price;
     private String category;
     private int stock;
     private LocalDate createdAt;

@@ -22,13 +22,26 @@ public class CartController {
     @PostMapping
     public ResponseEntity<Cart> addToCart(@RequestBody Cart cart, Principal principal) throws UserPrincipalNotFoundException {
         String username = principal.getName();
-        return new ResponseEntity<>(cartService.addToCart(username, cart.getProduct().getId()), HttpStatus.CREATED);
+
+        return new ResponseEntity<>(cartService.addToCart(username, cart.getProduct().getId(), cart.getQuantity()), HttpStatus.CREATED);
     }
 
     @GetMapping()
     public ResponseEntity<List<Cart>> getCartDetails(Principal principal){
         String username = principal.getName();
         return new ResponseEntity<>(cartService.getCartDetails(username), HttpStatus.OK);
+    }
+
+    @PostMapping("/increment")
+    public ResponseEntity<Cart> incrementQuantity(@RequestBody Cart cart, Principal principal){
+        String username = principal.getName();
+        return new ResponseEntity<>(cartService.incrementQuantity(username, cart.getProduct().getId()), HttpStatus.OK);
+    }
+
+    @PostMapping("/decrement")
+    public ResponseEntity<Cart> decrementQuantity(@RequestBody Cart cart, Principal principal){
+        String username = principal.getName();
+        return new ResponseEntity<>(cartService.decrementQuantity(username, cart.getProduct().getId()), HttpStatus.OK);
     }
 
 }
