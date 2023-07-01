@@ -1,6 +1,7 @@
 package com.aaronbujatn.BEluminaire.controller;
 
 import com.aaronbujatn.BEluminaire.model.Cart;
+import com.aaronbujatn.BEluminaire.model.Product;
 import com.aaronbujatn.BEluminaire.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,5 +44,11 @@ public class CartController {
         String username = principal.getName();
         return new ResponseEntity<>(cartService.decrementQuantity(username, cart.getProduct().getId()), HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteProduct(@PathVariable("id") Long id){
+        return new ResponseEntity<>(cartService.deleteProductFromCart(id), HttpStatus.OK);
+    }
+
 
 }

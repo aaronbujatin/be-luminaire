@@ -15,7 +15,7 @@ public class Cart {
     private Long id;
     private int quantity;
     private BigDecimal total;
-    private BigDecimal grandTotal;
+
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
@@ -29,6 +29,8 @@ public class Cart {
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @Transient
+    private BigDecimal grandTotal;
 
 }
 

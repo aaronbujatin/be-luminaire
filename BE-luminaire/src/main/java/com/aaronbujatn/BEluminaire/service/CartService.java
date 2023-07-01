@@ -51,7 +51,6 @@ public class CartService{
     }
 
     public Cart incrementQuantity(String username,Long id){
-
         User user = userRepository.findByUsername(username).orElse(null);
         Product product = productRepository.findById(id).orElse(null);
         Cart cart = cartRepository.findByUserAndProduct(user, product).orElse(null);
@@ -67,7 +66,6 @@ public class CartService{
     }
 
     public Cart decrementQuantity(String username, Long id){
-
         User user = userRepository.findByUsername(username).orElse(null);
         Product product = productRepository.findById(id).orElse(null);
         Cart cart = cartRepository.findByUserAndProduct(user, product).orElse(null);
@@ -76,8 +74,14 @@ public class CartService{
             cart.setQuantity(cart.getQuantity() - 1);
             cart.setTotal(product.getPrice().multiply(BigDecimal.valueOf(cart.getQuantity())));
         }
-
         return cartRepository.save(cart);
     }
+
+
+    public String deleteProductFromCart(Long id){
+        cartRepository.deleteById(id);
+        return "Product id: " + id + " was deleted";
+    }
+
 
 }
