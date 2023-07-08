@@ -1,14 +1,9 @@
 package com.aaronbujatn.BEluminaire.service;
 
-import com.aaronbujatn.BEluminaire.model.Address;
-import com.aaronbujatn.BEluminaire.model.Product;
-import com.aaronbujatn.BEluminaire.model.User;
+import com.aaronbujatn.BEluminaire.model.*;
 import com.aaronbujatn.BEluminaire.dto.OrderInput;
 import com.aaronbujatn.BEluminaire.dto.OrderProductQuantity;
-import com.aaronbujatn.BEluminaire.model.Order;
-import com.aaronbujatn.BEluminaire.repository.OrderRepository;
-import com.aaronbujatn.BEluminaire.repository.ProductRepository;
-import com.aaronbujatn.BEluminaire.repository.UserRepository;
+import com.aaronbujatn.BEluminaire.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,11 +18,19 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final OrderHistoryRepository orderHistoryRepository;
+    private final CartRepository cartRepository;
 
     public void placeOrder(OrderInput orderInput, String username) {
         List<OrderProductQuantity> orderProductQuantityList = orderInput.getOrderProductQuantity();
+        User user2 = userRepository.findByUsername(username).orElse(null);
+
+        OrderHistory orderHistory = new OrderHistory();
+        orderHistory.setUser(user2);
+        orderHistoryRepository.save(orderHistory);
 
         for(OrderProductQuantity orderProductQuantity : orderProductQuantityList) {
+
             Product product = productRepository.findById(orderProductQuantity.getId()).orElse(null);
             User user = userRepository.findByUsername(username).orElse(null);
             BigDecimal quantity = BigDecimal.valueOf(orderProductQuantity.getQuantity());
@@ -38,9 +41,11 @@ public class OrderService {
                     ORDER_STATUS,
                     product.getPrice().multiply(quantity),
                     product,
-                    user
-
+                    user,
+                    orderHistory
             );
+            List<Cart> carts = cartRepository.findByUser(user2);
+            carts.stream().forEach(x -> cartRepository.deleteById(x.getId()));
             orderRepository.save(order);
         }
 
