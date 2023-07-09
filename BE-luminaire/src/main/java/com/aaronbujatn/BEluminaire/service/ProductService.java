@@ -51,4 +51,8 @@ public class ProductService {
         return "Product ID : " + id + " was successfully deleted!";
     }
 
+    public List<Product> getAllProductByCategory(String category){
+        return productRepository.findByCategory(category);
+    }
+
 }
