@@ -48,4 +48,9 @@ public class ProductController {
     public ResponseEntity<List<Product>> getAllProductByCategory(@PathVariable("category") String category){
         return new ResponseEntity<>(productService.getAllProductByCategory(category), HttpStatus.OK);
     }
+
+    @GetMapping("/random")
+    public ResponseEntity<List<Product>> getRandomProducts(){
+        return new ResponseEntity<>(productService.randomProducts(), HttpStatus.OK);
+    }
 }

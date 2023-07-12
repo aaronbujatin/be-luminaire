@@ -55,4 +55,8 @@ public class ProductService {
         return productRepository.findByCategory(category);
     }
 
+    public List<Product> randomProducts(){
+        return productRepository.findRandomProducts();
+    }
+
 }

@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authRequest -> authRequest
                         .requestMatchers(HttpMethod.GET,"/api/v1/products/**").permitAll()
                         .requestMatchers("/api/v1/products").permitAll()
+                        .requestMatchers("/api/v1/users/**").permitAll()
                         .requestMatchers("/api/v1/auth/signin", "/api/v1/auth/signup").permitAll()
                         .requestMatchers("/api/v1/cart/**").hasRole("USER")
                         .requestMatchers("/api/v1/orders").hasRole("USER")

@@ -25,9 +25,10 @@ public class AuthenticationService {
         if(!isUsernameExists){
             User user = new User();
             user.setUsername(signupDto.getUsername());
-            user.setName(signupDto.getUsername());
+            user.setName(signupDto.getName());
             user.setEmail(signupDto.getEmail());
             user.setPassword(passwordEncoder.encode(signupDto.getPassword()));
+            user.setImage(signupDto.getImage());
             Optional<Role> role = roleRepository.findByName("ROLE_USER");
             user.setRoles(Collections.singleton(role.orElseThrow(() -> new CustomNotFoundException("Role : " + role + " was not found"))));
             return userRepository.save(user);
